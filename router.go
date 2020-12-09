@@ -7,6 +7,18 @@ import (
 
 type RequestHandler func(*Ctx)
 
+func ConvertToFastHTTPHandler(handler RequestHandler) fasthttp.RequestHandler {
+	return func(ctx *fasthttp.RequestCtx) {
+		rctx := AcquireCtx(ctx)
+		defer ReleaseCtx(rctx)
+
+		handler(rctx)
+
+		return
+	}
+
+}
+
 type Router struct {
 	Group       *fastrouter.Group
 	middlewares []RequestHandler
@@ -15,23 +27,23 @@ type Router struct {
 func (r *Router) Handle(method, path string, handlers ...RequestHandler) {
 	r.Group.Handle(method, path, func(ctx *fasthttp.RequestCtx) {
 		rctx := AcquireCtx(ctx)
+		defer ReleaseCtx(rctx)
 
 		for _, handler := range r.middlewares {
 			handler(rctx)
 			if !rctx.IsNext() {
-				break
-
+				return
 			}
 		}
 
 		for _, handler := range handlers {
 			handler(rctx)
 			if !rctx.IsNext() {
-				break
+				return
 			}
 		}
 
-		ReleaseCtx(rctx)
+		return
 	})
 }
 
@@ -65,4 +77,12 @@ func (r *Router) HEAD(path string, handlers ...RequestHandler) {
 
 func (r *Router) TRACE(path string, handlers ...RequestHandler) {
 	r.Handle("TRACE", path, handlers...)
+}
+
+func (r *Router) NewGroup(path string) *Router {
+	group := r.Group.Group(path)
+
+	return &Router{
+		Group: group,
+	}
 }

@@ -16,9 +16,10 @@ var ctxPool sync.Pool
 
 func AcquireCtx(ctx *fasthttp.RequestCtx) *Ctx {
 	v := ctxPool.Get()
-	if ctx == nil {
+	if v == nil {
 		redCtx := new(Ctx)
 		redCtx.RequestCtx = ctx
+		return redCtx
 	}
 
 	redCtx := v.(*Ctx)

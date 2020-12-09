@@ -8,6 +8,8 @@ import (
 )
 
 type Config struct {
+	//FastHTTP Settigns
+	ErrorHandler                       func(*Ctx, error)
 	Name                               string
 	Concurrency                        int
 	DisableKeepalive                   bool
@@ -32,5 +34,13 @@ type Config struct {
 	NoDefaultDate                      bool
 	NoDefaultContentType               bool
 	ConnState                          func(net.Conn, fasthttp.ConnState)
+	Logger                             fasthttp.Logger
 	KeepHijackedConns                  bool
+
+	//Router Settigs
+	SaveMatchedRoutePath bool
+	GlobalOPTIONS        RequestHandler
+	NotFound             RequestHandler
+	MethodNotAllowed     RequestHandler
+	PanicHandler         func(*Ctx, interface{})
 }
