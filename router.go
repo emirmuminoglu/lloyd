@@ -30,13 +30,15 @@ func (r *Router) Handle(method, path string, handlers ...RequestHandler) {
 		defer ReleaseCtx(rctx)
 
 		for _, handler := range r.middlewares {
+			rctx.next = false
 			handler(rctx)
-			if !rctx.IsNext() {
+			if !rctx.next {
 				return
 			}
 		}
 
 		for _, handler := range handlers {
+			rctx.next = false
 			handler(rctx)
 			if !rctx.IsNext() {
 				return
