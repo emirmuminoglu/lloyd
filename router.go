@@ -48,11 +48,11 @@ func (r *Router) POST(path string, handlers ...RequestHandler) {
 }
 
 func (r *Router) PUT(path string, handlers ...RequestHandler) {
-	r.Handle("POST", path, handlers...)
+	r.Handle("PUT", path, handlers...)
 }
 
 func (r *Router) PATCH(path string, handlers ...RequestHandler) {
-	r.Handle("POST", path, handlers...)
+	r.Handle("PATCH", path, handlers...)
 }
 
 func (r *Router) DELETE(path string, handlers ...RequestHandler) {
