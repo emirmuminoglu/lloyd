@@ -37,6 +37,10 @@ func New(cfg Config) *Red {
 	return red
 }
 
+func (r *Red) Shutdown(){
+	r.server.Shutdown()
+}
+
 func newRouter(cfg Config) *fastrouter.Router {
 	router := fastrouter.New()
 
