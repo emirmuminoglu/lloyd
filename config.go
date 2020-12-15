@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	//FastHTTP Settigns
+	//FastHTTP Settings
 	ErrorHandler                       func(*Ctx, error)
 	Name                               string
 	Concurrency                        int

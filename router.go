@@ -29,7 +29,7 @@ func (r *Router) Handle(method, path string, handlers ...RequestHandler) {
 	r.Group.Handle(method, path, func(ctx *fasthttp.RequestCtx) {
 		rctx := AcquireCtx(ctx)
 
-		defer func(){
+		defer func() {
 			for _, handler := range r.deferMiddlewares {
 				rctx.next = false
 				handler(rctx)
@@ -44,7 +44,7 @@ func (r *Router) Handle(method, path string, handlers ...RequestHandler) {
 		for _, handler := range r.middlewares {
 			rctx.next = false
 			handler(rctx)
-			if !rctx.next {	
+			if !rctx.next {
 				return
 			}
 		}
@@ -56,8 +56,6 @@ func (r *Router) Handle(method, path string, handlers ...RequestHandler) {
 				return
 			}
 		}
-
-
 
 		return
 	})

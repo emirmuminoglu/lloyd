@@ -37,7 +37,7 @@ func New(cfg Config) *Red {
 	return red
 }
 
-func (r *Red) Shutdown(){
+func (r *Red) Shutdown() {
 	r.server.Shutdown()
 }
 
