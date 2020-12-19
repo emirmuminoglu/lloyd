@@ -34,7 +34,7 @@ func (r *Router) Handle(method, path string, handlers ...RequestHandler) {
 				rctx.next = false
 				handler(rctx)
 				if !rctx.IsNext() {
-					return
+					break
 				}
 			}
 
