@@ -101,7 +101,8 @@ func (r *Router) NewGroup(path string) *Router {
 	group := r.Group.Group(path)
 
 	return &Router{
-		middlewares: r.middlewares,
-		Group:       group,
+		middlewares:      r.middlewares,
+		deferMiddlewares: r.deferMiddlewares,
+		Group:            group,
 	}
 }
