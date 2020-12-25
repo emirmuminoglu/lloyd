@@ -42,11 +42,11 @@ type Router interface {
 	TRACE(path string, handlers ...RequestHandler)
 
 	// Handler gives routers request handler.
-	// Returns un-nil function only if the router is a virtual host router. 
+	// Returns un-nil function only if the router is a virtual host router.
 	Handler() fasthttp.RequestHandler
 
-	// NewGroup creates a subrouter for given path. 
-	NewGroup(path string) Router 
+	// NewGroup creates a subrouter for given path.
+	NewGroup(path string) Router
 }
 
 type router struct {
