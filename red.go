@@ -10,35 +10,64 @@ import (
 )
 
 type Red struct {
-	server *fasthttp.Server
-	router *fastrouter.Router
-	*Router
+	server       *fasthttp.Server
+	fastrouter   *fastrouter.Router
+	virtualHosts map[string]*virtualHost
+	cfg          Config
+	*router
 }
 
+// New creates a new instance of Red server.
 func New(cfg Config) *Red {
 
-	router := newRouter(cfg)
+	r := newRouter(cfg)
 
 	if cfg.Name == "" {
 		cfg.Name = defaultServerName
 	}
 
 	red := &Red{
-		server: fasthttpServer(cfg),
-		router: router,
+		server:     fasthttpServer(cfg),
+		fastrouter: r,
 	}
 
-	group := router.Group("")
+	group := r.Group("")
 
-	red.Router = &Router{}
-
-	red.Router.Group = group
+	red.router = &router{}
+	red.cfg = cfg
+	red.router.Group = group
 
 	return red
 }
 
+// Shutdown shuts the server.
 func (r *Red) Shutdown() {
 	r.server.Shutdown()
+}
+
+// NewVirtualHost creates a virtual host for given hostName.
+func (r *Red) NewVirtualHost(hostName string) Router {
+	host := new(virtualHost)
+	r.virtualHosts[hostName] = host
+
+	host.Router = newRouter(r.cfg)
+
+	return host
+}
+
+// Serve serves the server with given listener.
+func (r *Red) Serve(ln net.Listener) error {
+	defer ln.Close()
+
+	r.server.Handler = func(ctx *fasthttp.RequestCtx) {
+		if h := r.virtualHosts[B2S(ctx.URI().Host())]; h != nil {
+			h.Handler()(ctx)
+		} else {
+			r.fastrouter.Handler(ctx)
+		}
+	}
+
+	return r.server.Serve(ln)
 }
 
 func newRouter(cfg Config) *fastrouter.Router {
@@ -106,12 +135,4 @@ func fasthttpServer(cfg Config) *fasthttp.Server {
 		Logger:                             cfg.Logger,
 		KeepHijackedConns:                  cfg.KeepHijackedConns,
 	}
-}
-
-func (r *Red) Serve(ln net.Listener) error {
-	defer ln.Close()
-
-	r.server.Handler = r.router.Handler
-
-	return r.server.Serve(ln)
 }

@@ -7,27 +7,58 @@ import (
 
 type RequestHandler func(*Ctx)
 
-func ConvertToFastHTTPHandler(handler RequestHandler) fasthttp.RequestHandler {
-	return func(ctx *fasthttp.RequestCtx) {
-		rctx := AcquireCtx(ctx)
-		defer ReleaseCtx(rctx)
+type Router interface {
+	// Handle registers given request handlers with the given path and method
+	// There are shortcuts for some methods you can use them.
+	Handle(method string, path string, handlers ...RequestHandler)
 
-		handler(rctx)
+	// Use registers given middleware handlers to router
+	// Given handlers will be executed by given order
+	Use(handlers ...RequestHandler)
 
-		return
-	}
+	// Defer registers given handlers to router
+	// Given handlers will be executed after middlewares and handlers by given order
+	Defer(handlers ...RequestHandler)
 
+	// GET is a shortcut for router.Handle(fasthttp.MethodGet, path, handlers)
+	GET(path string, handlers ...RequestHandler)
+
+	// POST is a shortcut for router.Handle(fasthttp.MethodPost, path, handlers)
+	POST(path string, handlers ...RequestHandler)
+
+	// PUT is a shortcut for router.Handle(fasthttp.MethodPut, path, handlers)
+	PUT(path string, handlers ...RequestHandler)
+
+	// PATCH is a shortcut for router.Handle(fasthttp.MethodPatch, path, handlers)
+	PATCH(path string, handlers ...RequestHandler)
+
+	// DELETE is a shortcut for router.Handle(fasthttp.MethodDelete, path, handlers)
+	DELETE(path string, handlers ...RequestHandler)
+
+	// HEAD is a shortcut for router.Handle(fasthttp.MethodHead, path, handlers)
+	HEAD(path string, handlers ...RequestHandler)
+
+	// TRACE is a shortcut for router.Handle(fasthttp.MethodTrace, path, handlers)
+	TRACE(path string, handlers ...RequestHandler)
+
+	// Handler gives routers request handler.
+	// Returns un-nil function only if the router is a virtual host router. 
+	Handler() fasthttp.RequestHandler
+
+	// NewGroup creates a subrouter for given path. 
+	NewGroup(path string) Router 
 }
 
-type Router struct {
+type router struct {
 	Group            *fastrouter.Group
 	middlewares      []RequestHandler
 	deferMiddlewares []RequestHandler
 }
 
-func (r *Router) Handle(method, path string, handlers ...RequestHandler) {
+func (r *router) Handle(method, path string, handlers ...RequestHandler) {
 	r.Group.Handle(method, path, func(ctx *fasthttp.RequestCtx) {
 		rctx := AcquireCtx(ctx)
+		rctx.pathName = path
 
 		defer func() {
 			for _, handler := range r.deferMiddlewares {
@@ -36,6 +67,10 @@ func (r *Router) Handle(method, path string, handlers ...RequestHandler) {
 				if !rctx.IsNext() {
 					break
 				}
+			}
+
+			for _, deferFunc := range rctx.deferFuncs {
+				deferFunc()
 			}
 
 			ReleaseCtx(rctx)
@@ -61,46 +96,50 @@ func (r *Router) Handle(method, path string, handlers ...RequestHandler) {
 	})
 }
 
-func (r *Router) Use(handlers ...RequestHandler) {
+func (r *router) Use(handlers ...RequestHandler) {
 	r.middlewares = append(r.middlewares, handlers...)
 }
 
-func (r *Router) Defer(handlers ...RequestHandler) {
+func (r *router) Defer(handlers ...RequestHandler) {
 	r.deferMiddlewares = append(r.deferMiddlewares, handlers...)
 }
 
-func (r *Router) GET(path string, handlers ...RequestHandler) {
-	r.Handle("GET", path, handlers...)
+func (r *router) GET(path string, handlers ...RequestHandler) {
+	r.Handle(fasthttp.MethodGet, path, handlers...)
 }
 
-func (r *Router) POST(path string, handlers ...RequestHandler) {
-	r.Handle("POST", path, handlers...)
+func (r *router) POST(path string, handlers ...RequestHandler) {
+	r.Handle(fasthttp.MethodPost, path, handlers...)
 }
 
-func (r *Router) PUT(path string, handlers ...RequestHandler) {
-	r.Handle("PUT", path, handlers...)
+func (r *router) PUT(path string, handlers ...RequestHandler) {
+	r.Handle(fasthttp.MethodPut, path, handlers...)
 }
 
-func (r *Router) PATCH(path string, handlers ...RequestHandler) {
-	r.Handle("PATCH", path, handlers...)
+func (r *router) PATCH(path string, handlers ...RequestHandler) {
+	r.Handle(fasthttp.MethodPatch, path, handlers...)
 }
 
-func (r *Router) DELETE(path string, handlers ...RequestHandler) {
-	r.Handle("DELETE", path, handlers...)
+func (r *router) DELETE(path string, handlers ...RequestHandler) {
+	r.Handle(fasthttp.MethodDelete, path, handlers...)
 }
 
-func (r *Router) HEAD(path string, handlers ...RequestHandler) {
-	r.Handle("HEAD", path, handlers...)
+func (r *router) HEAD(path string, handlers ...RequestHandler) {
+	r.Handle(fasthttp.MethodHead, path, handlers...)
 }
 
-func (r *Router) TRACE(path string, handlers ...RequestHandler) {
-	r.Handle("TRACE", path, handlers...)
+func (r *router) TRACE(path string, handlers ...RequestHandler) {
+	r.Handle(fasthttp.MethodTrace, path, handlers...)
 }
 
-func (r *Router) NewGroup(path string) *Router {
+func (r *router) Handler() fasthttp.RequestHandler {
+	return nil
+}
+
+func (r *router) NewGroup(path string) Router {
 	group := r.Group.Group(path)
 
-	return &Router{
+	return &router{
 		middlewares:      r.middlewares,
 		deferMiddlewares: r.deferMiddlewares,
 		Group:            group,
