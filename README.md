@@ -6,7 +6,7 @@
 
 A lightweight, high performance and [FastHTTP](https://github.com/valyala/fasthttp) based micro web framework.
 
-It's inspired by [atreugo](https://github.com/savsgio/atreugo)
+It's heavily inspired by [atreugo](https://github.com/savsgio/atreugo)
 
 # Features
 
