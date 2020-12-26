@@ -20,7 +20,7 @@ func (r *virtualHost) Handle(method, path string, handlers ...RequestHandler) {
 			for _, handler := range r.deferMiddlewares {
 				rctx.next = false
 				handler(rctx)
-				if !rctx.IsNext() {
+				if !rctx.next {
 					break
 				}
 			}
@@ -43,7 +43,7 @@ func (r *virtualHost) Handle(method, path string, handlers ...RequestHandler) {
 		for _, handler := range handlers {
 			rctx.next = false
 			handler(rctx)
-			if !rctx.IsNext() {
+			if !rctx.next {
 				return
 			}
 		}
