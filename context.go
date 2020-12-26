@@ -27,7 +27,7 @@ var (
 //AcquireCtx returns an empty Ctx instance from context pool
 //
 //The returned Ctx instance may be passed to ReleaseCtx when it is no longer needed.
-//It is forbidden accessing ctx after releasing it  
+//It is forbidden accessing ctx after releasing it
 func AcquireCtx(ctx *fasthttp.RequestCtx) *Ctx {
 	v := ctxPool.Get()
 	if v == nil {
@@ -46,7 +46,7 @@ func AcquireCtx(ctx *fasthttp.RequestCtx) *Ctx {
 
 //ReleaseCtx returns ctx acquired via AcquireCtx to context pool
 //
-//It is forbidden accessing ctx after releasing it  
+//It is forbidden accessing ctx after releasing it
 func ReleaseCtx(ctx *Ctx) {
 	ctx.next = false
 
