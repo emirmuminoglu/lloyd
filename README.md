@@ -12,7 +12,7 @@ It's heavily inspired by [atreugo](https://github.com/savsgio/atreugo)
 
 - Routing:
   - Based on [router](https://github.com/fasthttp/router)
-  - Multiple handler to single path (like express.js)  
+  - Multiple handlers to single path (like express.js)  
 - High performance:
   - Uses same stack with [atreugo](https://github.com/savsgio/atreugo) so the performance is almost same. (atreugo's benchmars is availabile in [here](https://github.com/smallnest/go-web-framework-benchmark))
 - Middleware support:
