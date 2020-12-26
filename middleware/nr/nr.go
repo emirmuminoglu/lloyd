@@ -5,7 +5,7 @@ import (
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
-func Middleware(app *newrelic.Application) func(c *red.Ctx) {
+func Middleware(app *newrelic.Application) red.RequestHandler {
 	return func(c *red.Ctx) {
 		method := string(c.Request.Header.Method())
 		url := c.URL()

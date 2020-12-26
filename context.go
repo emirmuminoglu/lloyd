@@ -33,13 +33,11 @@ func AcquireCtx(ctx *fasthttp.RequestCtx) *Ctx {
 	if v == nil {
 		redCtx := new(Ctx)
 		redCtx.RequestCtx = ctx
-		redCtx.stdUrl = AcquireURL(ctx.Request.URI())
 		return redCtx
 	}
 
 	redCtx := v.(*Ctx)
 	redCtx.RequestCtx = ctx
-	redCtx.stdUrl = AcquireURL(ctx.Request.URI())
 
 	return redCtx
 }
@@ -102,6 +100,10 @@ func (ctx *Ctx) PathName() string {
 
 //URL returns the net.URL instance associated with Ctx
 func (ctx *Ctx) URL() *stdUrl.URL {
+	if ctx.stdUrl == nil {
+		ctx.stdUrl = AcquireURL(ctx.Request.URI())
+	}
+
 	return ctx.stdUrl
 }
 
