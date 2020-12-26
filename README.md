@@ -1,8 +1,8 @@
 # red
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/emirmuminoglu/red.svg)](https://pkg.go.dev/github.com/emirmuminoglu/red)
 [![Go Report Card](https://goreportcard.com/badge/github.com/emirmuminoglu/red)](https://goreportcard.com/report/github.com/emirmuminoglu/red)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 
 A lightweight, high performance and [FastHTTP](https://github.com/valyala/fasthttp) based micro web framework.
 
