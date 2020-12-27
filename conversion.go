@@ -1,9 +1,10 @@
-package red
+package lloyd
 
 import (
+	"net/http"
+
 	"github.com/valyala/fasthttp"
 	adaptor "github.com/valyala/fasthttp/fasthttpadaptor"
-	"net/http"
 )
 
 func ConvertToFastHTTPHandler(handler RequestHandler) fasthttp.RequestHandler {

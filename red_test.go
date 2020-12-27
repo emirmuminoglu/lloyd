@@ -1,4 +1,4 @@
-package red
+package lloyd
 
 import (
 	"testing"
@@ -40,19 +40,19 @@ func Test_New(t *testing.T) {
 	}
 }
 
-func TestRed_Serve(t *testing.T) {
+func TestLloyd_Serve(t *testing.T) {
 	cfg := Config{}
-	r := New(cfg)
+	l := New(cfg)
 
 	ln := fasthttputil.NewInmemoryListener()
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- r.Serve(ln)
+		errCh <- l.Serve(ln)
 	}()
 
 	time.Sleep(100 * time.Millisecond)
 
-	if err := r.server.Shutdown(); err != nil {
+	if err := l.server.Shutdown(); err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
@@ -60,7 +60,7 @@ func TestRed_Serve(t *testing.T) {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	if r.server.Handler == nil {
+	if l.server.Handler == nil {
 		t.Error("Red.server.Handler is nil")
 	}
 }
@@ -68,13 +68,13 @@ func TestRed_Serve(t *testing.T) {
 func Benchmark_Handler(b *testing.B) {
 	s := New(Config{})
 
-	s.GET("/plaintext", func(ctx *Ctx) { return  })
-	s.GET("/json", func(ctx *Ctx) { return  })
-	s.GET("/db", func(ctx *Ctx) { return  })
-	s.GET("/queries", func(ctx *Ctx) { return  })
-	s.GET("/cached-worlds", func(ctx *Ctx) { return  })
-	s.GET("/fortunes", func(ctx *Ctx) { return  })
-	s.GET("/updates", func(ctx *Ctx) { return  })
+	s.GET("/plaintext", func(ctx *Ctx) { return })
+	s.GET("/json", func(ctx *Ctx) { return })
+	s.GET("/db", func(ctx *Ctx) { return })
+	s.GET("/queries", func(ctx *Ctx) { return })
+	s.GET("/cached-worlds", func(ctx *Ctx) { return })
+	s.GET("/fortunes", func(ctx *Ctx) { return })
+	s.GET("/updates", func(ctx *Ctx) { return })
 
 	ctx := new(fasthttp.RequestCtx)
 	ctx.Request.Header.SetMethod("GET")

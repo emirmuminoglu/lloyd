@@ -1,4 +1,4 @@
-package red
+package lloyd
 
 const (
 	defaultServerName = "red"

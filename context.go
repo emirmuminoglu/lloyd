@@ -1,10 +1,11 @@
-package red
+package lloyd
 
 import (
 	"sync"
 
-	"github.com/valyala/fasthttp"
 	stdUrl "net/url"
+
+	"github.com/valyala/fasthttp"
 )
 
 //Ctx context wrapper of fasthttp.RequestCtx to adds extra funtionality
@@ -31,15 +32,15 @@ var (
 func AcquireCtx(ctx *fasthttp.RequestCtx) *Ctx {
 	v := ctxPool.Get()
 	if v == nil {
-		redCtx := new(Ctx)
-		redCtx.RequestCtx = ctx
-		return redCtx
+		lCtx := new(Ctx)
+		lCtx.RequestCtx = ctx
+		return lCtx
 	}
 
-	redCtx := v.(*Ctx)
-	redCtx.RequestCtx = ctx
+	lCtx := v.(*Ctx)
+	lCtx.RequestCtx = ctx
 
-	return redCtx
+	return lCtx
 }
 
 //ReleaseCtx returns ctx acquired via AcquireCtx to context pool

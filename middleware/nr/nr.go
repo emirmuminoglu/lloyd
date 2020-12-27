@@ -1,12 +1,12 @@
 package nr
 
 import (
-	"github.com/emirmuminoglu/red"
+	"github.com/emirmuminoglu/lloyd"
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
-func Middleware(app *newrelic.Application) red.RequestHandler {
-	return func(c *red.Ctx) {
+func Middleware(app *newrelic.Application) lloyd.RequestHandler {
+	return func(c *lloyd.Ctx) {
 		method := string(c.Request.Header.Method())
 		url := c.URL()
 

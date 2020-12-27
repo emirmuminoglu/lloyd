@@ -1,7 +1,7 @@
 package cors
 
 import (
-	"github.com/emirmuminoglu/red"
+	"github.com/emirmuminoglu/lloyd"
 	"github.com/valyala/fasthttp"
 	"strconv"
 	"strings"
@@ -28,13 +28,13 @@ func isAllowedOrigin(allowed []string, origin string) bool {
 	return false
 }
 
-func New(cfg Config) red.RequestHandler {
+func New(cfg Config) lloyd.RequestHandler {
 	allowedHeaders := strings.Join(cfg.AllowedHeaders, strHeaderDelim)
 	allowedMethods := strings.Join(cfg.AllowedMethods, strHeaderDelim)
 	exposedHeaders := strings.Join(cfg.ExposedHeaders, strHeaderDelim)
 	maxAge := strconv.Itoa(cfg.AllowMaxAge)
 
-	return func(ctx *red.Ctx) {
+	return func(ctx *lloyd.Ctx) {
 		origin := string(ctx.Request.Header.Peek(fasthttp.HeaderOrigin))
 
 		if !isAllowedOrigin(cfg.AllowedOrigins, origin) {

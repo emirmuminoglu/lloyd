@@ -1,4 +1,4 @@
-module github.com/emirmuminoglu/red
+module github.com/emirmuminoglu/lloyd
 
 go 1.15
 

@@ -1,8 +1,8 @@
-# red
+# Lloyd
 
-[![Build Status](https://travis-ci.com/emirmuminoglu/red.svg?branch=master)](https://travis-ci.com/emirmuminoglu/red)
-[![Go Reference](https://pkg.go.dev/badge/github.com/emirmuminoglu/red.svg)](https://pkg.go.dev/github.com/emirmuminoglu/red)
-[![Go Report Card](https://goreportcard.com/badge/github.com/emirmuminoglu/red)](https://goreportcard.com/report/github.com/emirmuminoglu/red)
+[![Build Status](https://travis-ci.com/emirmuminoglu/lloyd.svg?branch=master)](https://travis-ci.com/emirmuminoglu/lloyd)
+[![Go Reference](https://pkg.go.dev/badge/github.com/emirmuminoglu/lloyd.svg)](https://pkg.go.dev/github.com/emirmuminoglu/lloyd)
+[![Go Report Card](https://goreportcard.com/badge/github.com/emirmuminoglu/lloyd)](https://goreportcard.com/report/github.com/emirmuminoglu/lloyd)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A lightweight, high performance and [FastHTTP](https://github.com/valyala/fasthttp) based micro web framework.

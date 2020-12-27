@@ -1,4 +1,4 @@
-package red
+package lloyd
 
 type JSONInterface interface {
 	MarshalJSON() ([]byte, error)

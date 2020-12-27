@@ -1,4 +1,4 @@
-package red
+package lloyd
 
 import (
 	"log"
@@ -9,7 +9,7 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-type Red struct {
+type Lloyd struct {
 	server       *fasthttp.Server
 	fastrouter   *fastrouter.Router
 	virtualHosts map[string]*virtualHost
@@ -17,8 +17,8 @@ type Red struct {
 	*router
 }
 
-// New creates a new instance of Red server.
-func New(cfg Config) *Red {
+// New creates a new instance of Lloyd server.
+func New(cfg Config) *Lloyd {
 
 	r := newRouter(cfg)
 
@@ -26,48 +26,48 @@ func New(cfg Config) *Red {
 		cfg.Name = defaultServerName
 	}
 
-	red := &Red{
+	l := &Lloyd{
 		server:     fasthttpServer(cfg),
 		fastrouter: r,
 	}
 
 	group := r.Group("")
 
-	red.router = &router{}
-	red.cfg = cfg
-	red.router.Group = group
+	l.router = &router{}
+	l.cfg = cfg
+	l.router.Group = group
 
-	return red
+	return l
 }
 
 // Shutdown shuts the server.
-func (r *Red) Shutdown() {
-	r.server.Shutdown()
+func (l *Lloyd) Shutdown() {
+	l.server.Shutdown()
 }
 
 // NewVirtualHost creates a virtual host for given hostName.
-func (r *Red) NewVirtualHost(hostName string) Router {
+func (l *Lloyd) NewVirtualHost(hostName string) Router {
 	host := new(virtualHost)
-	r.virtualHosts[hostName] = host
+	l.virtualHosts[hostName] = host
 
-	host.Router = newRouter(r.cfg)
+	host.Router = newRouter(l.cfg)
 
 	return host
 }
 
 // Serve serves the server with given listener.
-func (r *Red) Serve(ln net.Listener) error {
+func (l *Lloyd) Serve(ln net.Listener) error {
 	defer ln.Close()
 
-	r.server.Handler = func(ctx *fasthttp.RequestCtx) {
-		if h := r.virtualHosts[B2S(ctx.URI().Host())]; h != nil {
+	l.server.Handler = func(ctx *fasthttp.RequestCtx) {
+		if h := l.virtualHosts[B2S(ctx.URI().Host())]; h != nil {
 			h.Handler()(ctx)
 		} else {
-			r.fastrouter.Handler(ctx)
+			l.fastrouter.Handler(ctx)
 		}
 	}
 
-	return r.server.Serve(ln)
+	return l.server.Serve(ln)
 }
 
 func newRouter(cfg Config) *fastrouter.Router {
