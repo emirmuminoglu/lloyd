@@ -1,7 +1,7 @@
 # Lloyd
 
 [![Build Status](https://travis-ci.com/emirmuminoglu/lloyd.svg?branch=master)](https://travis-ci.com/emirmuminoglu/lloyd)
-[![Go Reference](https://pkg.go.dev/badge/github.com/emirmuminoglu/lloyd.svg)](https://pkg.go.dev/github.com/emirmuminoglu/lloyd)
+[![GoDoc](https://godoc.org/github.com/emirmuminoglu/lloyd?status.svg)](https://godoc.org/github.com/emirmuminoglu/lloyd)
 [![Go Report Card](https://goreportcard.com/badge/github.com/emirmuminoglu/lloyd)](https://goreportcard.com/report/github.com/emirmuminoglu/lloyd)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
