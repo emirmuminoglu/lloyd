@@ -7,10 +7,10 @@ import (
 
 func Middleware(app *newrelic.Application) lloyd.RequestHandler {
 	return func(c *lloyd.Ctx) {
-		method := string(c.Request.Header.Method())
+		method := lloyd.B2S(c.Request.Header.Method())
 		url := c.URL()
 
-		txn := app.StartTransaction(method + " " + string(c.PathName()))
+		txn := app.StartTransaction(method + " " + c.PathName())
 
 		var transport newrelic.TransportType
 
@@ -34,4 +34,13 @@ func Middleware(app *newrelic.Application) lloyd.RequestHandler {
 		c.Defer(txn.End)
 		c.Next()
 	}
+}
+
+func GetTxn(c *lloyd.Ctx) *newrelic.Transaction {
+	v := c.UserValue("nr-txn")
+	if v == nil {
+		return nil
+	}
+	
+	return v.(*newrelic.Transaction)
 }

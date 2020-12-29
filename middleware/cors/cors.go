@@ -35,7 +35,7 @@ func New(cfg Config) lloyd.RequestHandler {
 	maxAge := strconv.Itoa(cfg.AllowMaxAge)
 
 	return func(ctx *lloyd.Ctx) {
-		origin := string(ctx.Request.Header.Peek(fasthttp.HeaderOrigin))
+		origin := lloyd.B2S(ctx.Request.Header.Peek(fasthttp.HeaderOrigin))
 
 		if !isAllowedOrigin(cfg.AllowedOrigins, origin) {
 			ctx.Next()
@@ -60,7 +60,7 @@ func New(cfg Config) lloyd.RequestHandler {
 			ctx.Response.Header.Set(fasthttp.HeaderAccessControlExposeHeaders, exposedHeaders)
 		}
 
-		method := string(ctx.Method())
+		method := lloyd.B2S(ctx.Method())
 		if method != fasthttp.MethodOptions {
 			ctx.Next()
 			return
