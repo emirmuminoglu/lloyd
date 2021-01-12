@@ -17,8 +17,8 @@ It's heavily inspired by [atreugo](https://github.com/savsgio/atreugo)
 - High performance:
   - Uses same stack with [atreugo](https://github.com/savsgio/atreugo) so the performance is almost same. (atreugo's benchmars is availabile in [here](https://github.com/smallnest/go-web-framework-benchmark))
 - Middleware support:
-  - Normal middlewares
-  - Defer middlewares (literally)
+  - Before middlewares
+  - After middlewares
 - Responses:
   - MarshalJSON interface support (it's very useful if you're using a marshaler other than standart encoding/json)
   - Blob JSON response
