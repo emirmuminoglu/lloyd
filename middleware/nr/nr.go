@@ -34,7 +34,7 @@ func Middleware(app *newrelic.Application) lloyd.RequestHandler {
 			Transport: transport,
 		})
 
-		c.SetUserValue(uesrValueName, txn)
+		c.SetUserValue(userValueName, txn)
 		c.Defer(func() {
 			txn.SetWebResponse(c.ResponseWriter())
 			txn.End()
@@ -44,7 +44,7 @@ func Middleware(app *newrelic.Application) lloyd.RequestHandler {
 }
 
 func GetTxn(ctx context.Context) *newrelic.Transaction {
-	v := c.Value(userValueName)
+	v := ctx.Value(userValueName)
 	if v == nil {
 		return nil
 	}
