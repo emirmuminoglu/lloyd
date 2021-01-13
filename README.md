@@ -20,5 +20,5 @@ It's heavily inspired by [atreugo](https://github.com/savsgio/atreugo)
   - Before middlewares
   - After middlewares
 - Responses:
-  - MarshalJSON interface support (it's very useful if you're using a marshaler other than standart encoding/json)
+  - MarshalJSON interface support (it'd be very useful if you're using a marshaler other than standart encoding/json)
   - Blob JSON response
