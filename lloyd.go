@@ -36,6 +36,7 @@ func New(cfg Config) *Lloyd {
 	l.router = &router{}
 	l.cfg = cfg
 	l.router.Group = group
+	l.virtualHosts = map[string]*virtualHost{}
 
 	return l
 }
