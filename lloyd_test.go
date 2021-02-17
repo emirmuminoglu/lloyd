@@ -88,3 +88,47 @@ func Benchmark_Handler(b *testing.B) {
 		handler(ctx)
 	}
 }
+
+func Benchmark_Ctx_Url(b *testing.B) {
+	s := New(Config{})
+
+	s.GET("/test", func(ctx *Ctx) {
+		ctx.URL()
+
+		return
+	})
+
+	ctx := new(fasthttp.RequestCtx)
+	ctx.Request.Header.SetMethod("GET")
+	ctx.Request.SetRequestURI("/test")
+
+	handler := s.fastrouter.Handler
+
+	b.ResetTimer()
+
+	for i := 0; i <= b.N; i++ {
+		handler(ctx)
+	}
+}
+
+func Benchmark_Ctx_RequestWriter(b *testing.B) {
+	s := New(Config{})
+
+	s.GET("/test", func(ctx *Ctx) {
+		ctx.ResponseWriter()
+
+		return
+	})
+
+	ctx := new(fasthttp.RequestCtx)
+	ctx.Request.Header.SetMethod("GET")
+	ctx.Request.SetRequestURI("/test")
+
+	handler := s.fastrouter.Handler
+
+	b.ResetTimer()
+
+	for i := 0; i <= b.N; i++ {
+		handler(ctx)
+	}
+}

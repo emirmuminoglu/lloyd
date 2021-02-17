@@ -3,6 +3,7 @@ package lloyd
 import (
 	"sync"
 
+	"net/http"
 	stdUrl "net/url"
 
 	"github.com/valyala/fasthttp"
@@ -15,6 +16,7 @@ type Ctx struct {
 	next       bool
 	pathName   string
 	stdUrl     *stdUrl.URL
+	rw         *responseWriter
 	deferFuncs []func()
 	error      bool
 }
@@ -47,6 +49,9 @@ func AcquireCtx(ctx *fasthttp.RequestCtx) *Ctx {
 //
 //It is forbidden accessing ctx after releasing it
 func ReleaseCtx(ctx *Ctx) {
+	ReleaseURL(ctx.stdUrl)
+	relRespWriter(ctx.rw)
+
 	ctx.next = false
 
 	ctxPool.Put(ctx)
@@ -83,6 +88,10 @@ func AcquireURL(uri *fasthttp.URI) *stdUrl.URL {
 //
 //It is forbidden accessing url after releasing it
 func ReleaseURL(url *stdUrl.URL) {
+	if url == nil {
+		return
+	}
+
 	*url = *zeroUrl
 
 	urlPool.Put(url)
@@ -118,4 +127,27 @@ func (ctx *Ctx) Defer(deferFunc func()) {
 //RequestID returns the request id associated with Ctx
 func (ctx *Ctx) RequestID() []byte {
 	return ctx.Request.Header.Peek(XRequestIDHeader)
+}
+
+//ResponseWriter returns the http.ResponseWriter instance associated with Ctx
+func (ctx *Ctx) ResponseWriter() http.ResponseWriter {
+	if ctx.rw != nil {
+		return ctx.rw
+	}
+
+	rw := acqRespWriter()
+
+	rw.ctx = ctx
+	rw.hdr = http.Header{}
+
+	ctx.Response.Header.VisitAll(func(k, v []byte) {
+		sk := B2S(k)
+		sv := B2S(v)
+
+		rw.hdr.Set(sk, sv)
+	})
+
+	ctx.rw = rw
+
+	return rw
 }

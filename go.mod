@@ -8,4 +8,3 @@ require (
 	github.com/newrelic/go-agent/v3 v3.9.0
 	github.com/valyala/fasthttp v1.18.0
 )
-

@@ -1,9 +1,13 @@
 package nr
 
 import (
+	"context"
+
 	"github.com/emirmuminoglu/lloyd"
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
+
+const userValueName = "nr-txn"
 
 func Middleware(app *newrelic.Application) lloyd.RequestHandler {
 	return func(c *lloyd.Ctx) {
@@ -30,17 +34,20 @@ func Middleware(app *newrelic.Application) lloyd.RequestHandler {
 			Transport: transport,
 		})
 
-		c.SetUserValue("nr-txn", txn)
-		c.Defer(txn.End)
+		c.SetUserValue(userValueName, txn)
+		c.Defer(func() {
+			txn.SetWebResponse(c.ResponseWriter())
+			txn.End()
+		})
 		c.Next()
 	}
 }
 
-func GetTxn(c *lloyd.Ctx) *newrelic.Transaction {
-	v := c.UserValue("nr-txn")
+func GetTxn(ctx context.Context) *newrelic.Transaction {
+	v := ctx.Value(userValueName)
 	if v == nil {
 		return nil
 	}
-	
+
 	return v.(*newrelic.Transaction)
 }
